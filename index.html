@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Camera Image Capture</title>
+</head>
+<body>
+    <h1>Camera Image Capture</h1>
+    <video id="camera" autoplay></video>
+    <button id="captureButton">Capture Image</button>
+    <canvas id="canvas" style="display: none;"></canvas>
+    <img id="capturedImage" alt="Captured Image">
+
+    <script>
+        const video = document.getElementById('camera');
+        const captureButton = document.getElementById('captureButton');
+        const canvas = document.getElementById('canvas');
+        const capturedImage = document.getElementById('capturedImage');
+        
+        // Check if the user's browser supports getUserMedia
+        if (navigator.mediaDevices && navigator.mediaDevices.getUserMedia) {
+            navigator.mediaDevices.getUserMedia({ video: true })
+                .then(function (stream) {
+                    video.srcObject = stream;
+                })
+                .catch(function (error) {
+                    console.error('Error accessing the camera: ', error);
+                });
+        } else {
+            alert('getUserMedia is not supported in this browser.');
+        }
+
+        // Capture an image when the capture button is clicked
+        captureButton.addEventListener('click', function () {
+            canvas.width = video.videoWidth;
+            canvas.height = video.videoHeight;
+            canvas.getContext('2d').drawImage(video, 0, 0, canvas.width, canvas.height);
+            capturedImage.src = canvas.toDataURL('image/jpeg');
+            capturedImage.style.display = 'block';
+        });
+    </script>
+</body>
+</html>
